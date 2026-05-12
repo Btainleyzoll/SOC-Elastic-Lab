@@ -14,7 +14,7 @@
 
 A credential dumping attack was detected involving the use of **Mimikatz** to access the Windows LSASS process and attempt extraction of authentication material from memory.
 
-The attack was identified through **Sysmon Event ID 10 (Process Access)** logs collected by Winlogbeat and analyzed within the Elastic Stack SIEM environment. Detection occurred within seconds of execution, allowing rapid containment and investigation.
+The attack was identified through **Sysmon Event ID 10 (Process Access)** logs collected by Winlogbeat and analysed within the Elastic Stack SIEM environment. Detection occurred within seconds of execution, allowing rapid containment and investigation.
 
 ---
 
@@ -59,7 +59,7 @@ The attack was identified through **Sysmon Event ID 10 (Process Access)** logs c
 
 ---
 
-## Behavioral Indicators
+## Behavioural Indicators
 
 | Indicator              | Value               |
 | ---------------------- | ------------------- |
@@ -95,7 +95,7 @@ winlog.event_data.TargetImage: *lsass.exe
 
 The detection rule monitors for suspicious access attempts against the **LSASS** process, which commonly stores authentication credentials in memory.
 
-Mimikatz attempts to open LSASS with elevated privileges using memory read permissions. This behavior is highly suspicious and commonly associated with credential dumping activity.
+Mimikatz attempts to open LSASS with elevated privileges using memory read permissions. This behaviour is highly suspicious and commonly associated with credential dumping activity.
 
 ---
 
@@ -106,8 +106,8 @@ Mimikatz attempts to open LSASS with elevated privileges using memory read permi
 * `mimikatz.exe` launched from local tools directory
 * PowerShell used as parent process
 * Direct access attempt made against `lsass.exe`
-* SIEM alert generated immediately after access event
-* Activity confirmed as intentional attack simulation within lab environment
+* SIEM alert generated immediately after the access event
+* Activity confirmed as an intentional attack simulation within the lab environment
 
 ---
 
