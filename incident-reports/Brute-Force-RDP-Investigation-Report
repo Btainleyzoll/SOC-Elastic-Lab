@@ -14,7 +14,7 @@
 
 A brute force attack targeting Remote Desktop Protocol (RDP) authentication was detected against a Windows system within the SOC lab environment.
 
-The attack generated a high volume of failed login attempts against the account `bfish` and was successfully identified through Windows Security Event ID 4625 monitoring in the Elastic Stack SIEM platform.
+The attack generated a high volume of failed login attempts against the account `bfish` using Hydra v9.5 and was successfully identified through Windows Security Event ID 4625 monitoring in the Elastic Stack SIEM platform.
 
 ---
 
