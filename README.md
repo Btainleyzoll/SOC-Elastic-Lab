@@ -72,20 +72,6 @@ SOC-Detection-Lab/
 ├── README.md
 ```
 
----
-
-# Screenshots
-
-## Kibana Detection Dashboard
-
-![Dashboard](screenshots/kibana-alert.png)
-
-## Mimikatz Detection
-
-![Mimikatz](screenshots/mimikatz-detection.png)
-
----
-
 # Skills Demonstrated
 
 * SIEM deployment and configuration
