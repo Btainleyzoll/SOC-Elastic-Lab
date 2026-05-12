@@ -65,12 +65,11 @@ winlog.event_data.LogonType: "10"
 ```text id="4rhzl8"
 SOC-Detection-Lab/
 │
-├── README.md
-├── screenshots/
-├── incident-reports/
 ├── detection-rules/
+├── incident-reports/
+├── screenshots/
 ├── setup/
-└── queries/
+├── README.md
 ```
 
 ---
