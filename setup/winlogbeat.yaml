@@ -1,0 +1,16 @@
+winlogbeat.event_logs:
+  - name: Application
+    ignore_older: 72h
+  - name: System
+  - name: Security
+  - name: Microsoft-Windows-Sysmon/Operational
+
+output.elasticsearch:
+  hosts: ["<ELASTIC_VM_IP>:9200"]
+  username: "elastic"
+  password: "<YOUR_ELASTIC_PASSWORD>"
+  protocol: "https"
+  ssl.verification_mode: "none"
+
+setup.kibana:
+  host: "<ELASTIC_VM_IP>:5601"
