@@ -1,0 +1,22 @@
+# =================== System: Kibana Server ===================
+
+server.port: 5601
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["https://localhost:9200"]
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "ftZeQ79*lv__tJXP1=QT"
+elasticsearch.requestTimeout: 300000
+elasticsearch.ssl.certificateAuthorities: ["/etc/elasticsearch/certs/http_ca.crt"]
+xpack.encryptedSavedObjects.encryptionKey: "002ff0b1cfe0ee5dc2fd7f6af3984711da3d1b6a156e5ef6f0e76d4acdd2cc20"
+logging:
+  appenders:
+    file:
+      type: file
+      fileName: /var/log/kibana/kibana.log
+      layout:
+        type: json
+  root:
+    appenders:
+      - default
+      - file
+pid.file: /run/kibana/kibana.pid
