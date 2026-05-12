@@ -61,7 +61,7 @@ The attack generated a high volume of failed login attempts against the account 
 
 ---
 
-## Behavioral Indicators
+## Behavioural Indicators
 
 | Indicator           | Value                              |
 | ------------------- | ---------------------------------- |
@@ -110,11 +110,11 @@ Indicators of brute force activity included:
 
 ## Observed Activity
 
-* Hydra used to automate password guessing attempts
+* Hydra used to automate password-guessing attempts
 * 124 failed logins recorded within 60 seconds
 * Single account (`bfish`) repeatedly targeted
 * No successful authentication observed
-* SIEM correlation rule triggered immediately after threshold exceeded
+* SIEM correlation rule triggered immediately after the threshold exceeded
 
 ---
 
@@ -123,7 +123,7 @@ Indicators of brute force activity included:
 ## Containment
 
 * RDP service temporarily disabled
-* Source attack traffic isolated within lab environment
+* Source attack traffic isolated within the lab environment
 * Security logs preserved for analysis
 
 ## Eradication
