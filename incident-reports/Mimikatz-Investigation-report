@@ -1,0 +1,189 @@
+# INCIDENT INVESTIGATION REPORT: MIMIKATZ CREDENTIAL DUMPING
+
+| Field            | Value                                           |
+| ---------------- | ----------------------------------------------- |
+| **Date**         | 5/5/2026                                        |
+| **Analyst**      | Benjamin Ainley-Zoll                            |
+| **Severity**     | CRITICAL                                        |
+| **Status**       | CONTAINED (Lab Environment)                     |
+| **MITRE ATT&CK** | T1003.001 - OS Credential Dumping: LSASS Memory |
+
+---
+
+# Executive Summary
+
+A credential dumping attack was detected involving the use of **Mimikatz** to access the Windows LSASS process and attempt extraction of authentication material from memory.
+
+The attack was identified through **Sysmon Event ID 10 (Process Access)** logs collected by Winlogbeat and analyzed within the Elastic Stack SIEM environment. Detection occurred within seconds of execution, allowing rapid containment and investigation.
+
+---
+
+# Technical Details
+
+## Attack Information
+
+| Attribute             | Value                               |
+| --------------------- | ----------------------------------- |
+| **Attack Type**       | Credential Dumping                  |
+| **Tool Used**         | Mimikatz v2.2.0                     |
+| **Target Process**    | lsass.exe                           |
+| **Detection Source**  | Sysmon Event ID 10                  |
+| **Operating System**  | Windows 10                          |
+| **Collection Method** | Winlogbeat → Elasticsearch → Kibana |
+
+---
+
+# Timeline of Events
+
+| Time     | Activity                               |
+| -------- | -------------------------------------- |
+| 14:23:15 | `mimikatz.exe` process created         |
+| 14:23:17 | Access attempt to `lsass.exe` detected |
+| 14:23:18 | SIEM alert triggered in Kibana         |
+| 14:23:30 | Investigation initiated                |
+| 14:24:10 | Malicious process terminated           |
+
+---
+
+# Indicators of Compromise (IOCs)
+
+## Process Indicators
+
+| Indicator          | Value                                |
+| ------------------ | ------------------------------------ |
+| **Process Name**   | mimikatz.exe                         |
+| **Process Path**   | `C:\Tools\mimikatz\x64\mimikatz.exe` |
+| **Parent Process** | powershell.exe                       |
+| **Target Process** | lsass.exe                            |
+| **Target PID**     | 680                                  |
+
+---
+
+## Behavioral Indicators
+
+| Indicator              | Value               |
+| ---------------------- | ------------------- |
+| **Event ID**           | 10 (Process Access) |
+| **Access Rights**      | `0x1010`            |
+| **Technique**          | LSASS Memory Access |
+| **Privilege Required** | Administrator       |
+| **Detection Type**     | Sysmon Correlation  |
+
+---
+
+# Detection Methodology
+
+## Data Sources
+
+* Sysmon Event ID 1 (Process Creation)
+* Sysmon Event ID 10 (Process Access)
+* Winlogbeat Log Collection
+* Kibana SIEM Correlation Rules
+
+---
+
+## Detection Query
+
+```kql
+event.code: 10 AND 
+winlog.event_data.TargetImage: *lsass.exe
+```
+
+---
+
+## Detection Logic
+
+The detection rule monitors for suspicious access attempts against the **LSASS** process, which commonly stores authentication credentials in memory.
+
+Mimikatz attempts to open LSASS with elevated privileges using memory read permissions. This behavior is highly suspicious and commonly associated with credential dumping activity.
+
+---
+
+# Investigation Findings
+
+## Observed Activity
+
+* `mimikatz.exe` launched from local tools directory
+* PowerShell used as parent process
+* Direct access attempt made against `lsass.exe`
+* SIEM alert generated immediately after access event
+* Activity confirmed as intentional attack simulation within lab environment
+
+---
+
+# Response Actions
+
+## Containment
+
+* Malicious process terminated
+* System isolated within lab network
+* Investigation logs preserved
+
+## Eradication
+
+* Mimikatz executable removed
+* Temporary files deleted
+* Security logs archived
+
+## Recovery
+
+* Verified no persistence mechanisms were created
+* Confirmed no additional malicious processes remained active
+* Monitoring continued after containment
+
+---
+
+# Recommendations
+
+## Immediate Improvements
+
+* Enable LSASS Protected Process Light (PPL)
+* Deploy Microsoft Credential Guard
+* Restrict local administrator access
+* Enable advanced PowerShell logging
+
+---
+
+## Long-Term Security Enhancements
+
+* Implement Endpoint Detection & Response (EDR)
+* Apply least privilege access controls
+* Segment administrative systems from user endpoints
+* Expand SIEM detection coverage for credential access techniques
+
+---
+
+# MITRE ATT&CK Mapping
+
+| Tactic            | Technique             | ID        |
+| ----------------- | --------------------- | --------- |
+| Credential Access | OS Credential Dumping | T1003     |
+| Credential Access | LSASS Memory          | T1003.001 |
+
+---
+
+# Evidence Collected
+
+* Sysmon Event ID 10 logs
+* Kibana alert screenshots
+* Process execution metadata
+* SIEM correlation results
+
+---
+
+# Conclusion
+
+The SOC lab successfully detected and investigated a simulated credential dumping attack using Mimikatz. The activity demonstrated effective visibility into malicious process behavior through Sysmon logging and Elastic Stack correlation.
+
+This investigation validated the effectiveness of the configured SIEM pipeline for detecting credential access techniques commonly used by attackers during post-exploitation activity.
+
+---
+
+# Report Metadata
+
+| Field              | Value                         |
+| ------------------ | ----------------------------- |
+| **Prepared By**    | Benjamin Ainley-Zoll          |
+| **Report Version** | 1.0                           |
+| **Classification** | Educational / Lab Environment |
+| **Environment**    | Isolated SOC Lab              |
