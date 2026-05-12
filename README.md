@@ -1,30 +1,140 @@
 # SOC Detection Lab
 
-Built a home SOC lab using Elastic Stack, Sysmon, and Windows event logs to detect simulated attacks.
+A home SOC lab built to practice threat detection, log analysis, and incident response using the Elastic Stack.
 
-## Tools Used
-- Elasticsearch
-- Kibana
-- Sysmon
-- Winlogbeat
-- Kali Linux
+---
 
-## Attacks Simulated
-- Mimikatz credential dumping
-- PowerShell download cradle
-- RDP brute force
+# Overview
 
-## Skills Demonstrated
-- SIEM deployment
-- Threat detection
-- Log analysis
-- Incident investigation
-- KQL queries
+This project demonstrates how security events can be collected, analyzed, and investigated within a small SIEM environment.
 
-## Screenshots
+The lab includes:
 
-### Mimikatz Detection
-![alert](screenshots/mimikatz-detection.png)
+* Windows 10 victim machine
+* Ubuntu SIEM server
+* Kali Linux attacker machine
+* Sysmon + Winlogbeat log collection
+* Elasticsearch + Kibana monitoring
 
-### Kibana Dashboard
-![dashboard](screenshots/kibana-alert.png)
+---
+
+# Technologies Used
+
+* Elasticsearch
+* Kibana
+* Sysmon
+* Winlogbeat
+* Kali Linux
+* PowerShell
+* Windows Event Logs
+
+---
+
+# Attacks Simulated
+
+| Attack                      | MITRE ATT&CK | Status   |
+| --------------------------- | ------------ | -------- |
+| Mimikatz Credential Dumping | T1003.001    | Detected |
+| PowerShell Download Cradle  | T1059.001    | Detected |
+| RDP Brute Force             | T1110.001    | Detected |
+
+---
+
+# Detection Examples
+
+## Mimikatz Detection
+
+```kql id="b5o9wr"
+event.code: 10 AND
+winlog.event_data.TargetImage: *lsass.exe
+```
+
+---
+
+## RDP Brute Force Detection
+
+```kql id="y3ms8g"
+event.code: "4625" AND
+winlog.event_data.LogonType: "10"
+```
+
+---
+
+# Project Structure
+
+```text id="4rhzl8"
+SOC-Detection-Lab/
+│
+├── README.md
+├── screenshots/
+├── incident-reports/
+├── detection-rules/
+├── setup/
+└── queries/
+```
+
+---
+
+# Screenshots
+
+## Kibana Detection Dashboard
+
+![Dashboard](screenshots/kibana-alert.png)
+
+## Mimikatz Detection
+
+![Mimikatz](screenshots/mimikatz-detection.png)
+
+---
+
+# Skills Demonstrated
+
+* SIEM deployment and configuration
+* Threat detection engineering
+* Log analysis using Kibana
+* Incident investigation
+* MITRE ATT&CK mapping
+* Windows event monitoring
+
+---
+
+# Setup Summary
+
+## Environment
+
+| Machine       | Purpose                |
+| ------------- | ---------------------- |
+| Ubuntu Server | Elasticsearch + Kibana |
+| Windows 10    | Victim machine         |
+| Kali Linux    | Attack simulation      |
+
+## Log Flow
+
+```text id="6tv20p"
+Windows Logs → Winlogbeat → Elasticsearch → Kibana
+```
+
+---
+
+# Incident Reports
+
+* Mimikatz Credential Dumping
+* PowerShell Download Cradle
+* RDP Brute Force Attack
+
+Reports can be found in the `incident-reports/` folder.
+
+---
+
+# Disclaimer
+
+This project was created for educational purposes inside an isolated lab environment.
+
+---
+
+# Author
+
+Benjamin Ainley-Zoll
+
+* GitHub: Btainleyzoll
+* LinkedIn: benjamin-ainley-zoll
