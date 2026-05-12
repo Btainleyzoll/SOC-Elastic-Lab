@@ -1,0 +1,196 @@
+# INCIDENT INVESTIGATION REPORT: RDP BRUTE FORCE ATTACK
+
+| Field            | Value                                      |
+| ---------------- | ------------------------------------------ |
+| **Date**         | 5/5/2026                                   |
+| **Analyst**      | Benjamin Ainley-Zoll                       |
+| **Severity**     | HIGH                                       |
+| **Status**       | CONTAINED (Lab Environment)                |
+| **MITRE ATT&CK** | T1110.001 - Brute Force: Password Guessing |
+
+---
+
+# Executive Summary
+
+A brute force attack targeting Remote Desktop Protocol (RDP) authentication was detected against a Windows system within the SOC lab environment.
+
+The attack generated a high volume of failed login attempts against the account `bfish` and was successfully identified through Windows Security Event ID 4625 monitoring in the Elastic Stack SIEM platform.
+
+---
+
+# Technical Details
+
+## Attack Information
+
+| Attribute             | Value                               |
+| --------------------- | ----------------------------------- |
+| **Attack Type**       | RDP Brute Force                     |
+| **Tool Used**         | Hydra                               |
+| **Target Protocol**   | Remote Desktop Protocol (RDP)       |
+| **Target Username**   | bfish                               |
+| **Failed Attempts**   | 124 attempts in 1 minute            |
+| **Detection Source**  | Windows Security Logs               |
+| **Collection Method** | Winlogbeat → Elasticsearch → Kibana |
+
+---
+
+# Timeline of Events
+
+| Time     | Activity                                 |
+| -------- | ---------------------------------------- |
+| 16:11:02 | Multiple failed login attempts initiated |
+| 16:11:10 | Event ID 4625 logs rapidly generated     |
+| 16:11:18 | SIEM threshold exceeded                  |
+| 16:11:19 | Brute force alert triggered              |
+| 16:11:45 | Investigation initiated                  |
+| 16:12:10 | Attack traffic contained                 |
+
+---
+
+# Indicators of Compromise (IOCs)
+
+## Authentication Indicators
+
+| Indicator                  | Value                         |
+| -------------------------- | ----------------------------- |
+| **Event ID**               | 4625                          |
+| **Logon Type**             | 10 (Remote Interactive / RDP) |
+| **Authentication Failure** | Failed Password Attempt       |
+| **Target Username**        | bfish                         |
+| **Attack Method**          | Password Guessing             |
+
+---
+
+## Behavioral Indicators
+
+| Indicator           | Value                              |
+| ------------------- | ---------------------------------- |
+| **Attack Tool**     | Hydra                              |
+| **Attack Volume**   | 124 login attempts                 |
+| **Attack Duration** | 1 minute                           |
+| **Technique**       | Automated Credential Guessing      |
+| **Detection Type**  | Authentication Failure Correlation |
+
+---
+
+# Detection Methodology
+
+## Data Sources
+
+* Windows Security Logs
+* Event ID 4625 (Failed Logon)
+* Winlogbeat Log Collection
+* Kibana SIEM Correlation Rules
+
+---
+
+## Detection Query
+
+```kql id="v9h1n3"
+event.code: "4625" AND
+winlog.event_data.LogonType: "10"
+```
+
+---
+
+## Detection Logic
+
+The detection rule identifies excessive failed RDP authentication attempts occurring within a short time period.
+
+Indicators of brute force activity included:
+
+* High frequency of failed logins
+* Repeated targeting of the same username
+* Remote Interactive logon attempts (Type 10)
+* Rapid event generation consistent with automated tools
+
+---
+
+# Investigation Findings
+
+## Observed Activity
+
+* Hydra used to automate password guessing attempts
+* 124 failed logins recorded within 60 seconds
+* Single account (`bfish`) repeatedly targeted
+* No successful authentication observed
+* SIEM correlation rule triggered immediately after threshold exceeded
+
+---
+
+# Response Actions
+
+## Containment
+
+* RDP service temporarily disabled
+* Source attack traffic isolated within lab environment
+* Security logs preserved for analysis
+
+## Eradication
+
+* Brute force activity terminated
+* Target account reviewed for compromise
+* Authentication monitoring increased
+
+## Recovery
+
+* RDP access restored after validation
+* Password policies reviewed
+* Monitoring continued after containment
+
+---
+
+# Recommendations
+
+## Immediate Improvements
+
+* Implement account lockout policies
+* Restrict RDP access using firewall rules
+* Enforce strong password requirements
+* Enable multi-factor authentication (MFA)
+
+---
+
+## Long-Term Security Enhancements
+
+* Deploy geolocation-based login restrictions
+* Monitor for authentication spikes
+* Limit external RDP exposure
+* Use VPN access for remote administration
+
+---
+
+# MITRE ATT&CK Mapping
+
+| Tactic            | Technique         | ID        |
+| ----------------- | ----------------- | --------- |
+| Credential Access | Brute Force       | T1110     |
+| Credential Access | Password Guessing | T1110.001 |
+
+---
+
+# Evidence Collected
+
+* Windows Security Event ID 4625 logs
+* Kibana alert screenshots
+* Authentication failure telemetry
+* SIEM correlation results
+
+---
+
+# Conclusion
+
+The SOC lab successfully detected and investigated a simulated RDP brute force attack using Hydra.
+
+The investigation demonstrated effective monitoring of authentication activity through Windows Security Logs, Winlogbeat ingestion, and Elastic Stack SIEM correlation rules.
+
+---
+
+# Report Metadata
+
+| Field              | Value                         |
+| ------------------ | ----------------------------- |
+| **Prepared By**    | Benjamin Ainley-Zoll          |
+| **Report Version** | 1.0                           |
+| **Classification** | Educational / Lab Environment |
+| **Environment**    | Isolated SOC Lab              |
