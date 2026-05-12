@@ -6,7 +6,7 @@ A home SOC lab built to practice threat detection, log analysis, and incident re
 
 # Overview
 
-This project demonstrates how security events can be collected, analyzed, and investigated within a small SIEM environment.
+This project demonstrates how security events can be collected, analysed, and investigated within a small SIEM environment.
 
 The lab includes:
 
@@ -137,4 +137,4 @@ This project was created for educational purposes inside an isolated lab environ
 Benjamin Ainley-Zoll
 
 * GitHub: Btainleyzoll
-* LinkedIn: benjamin-ainley-zoll
+* LinkedIn: https://www.linkedin.com/in/benjamin-ainley-zoll/
