@@ -58,7 +58,7 @@ The attack was identified through PowerShell Script Block Logging and Sysmon pro
 
 ---
 
-## Behavioral Indicators
+## Behavioural Indicators
 
 | Indicator               | Value                               |
 | ----------------------- | ----------------------------------- |
@@ -121,7 +121,7 @@ powershell.file.script_block_text: *DownloadString*
 
 ## Detection Logic
 
-The detection rule monitors for suspicious PowerShell behavior commonly associated with malware delivery and command execution.
+The detection rule monitors for suspicious PowerShell behaviour commonly associated with malware delivery and command execution.
 
 Key indicators included:
 
@@ -157,13 +157,13 @@ These techniques are frequently used by attackers to execute payloads directly i
 
 ## Eradication
 
-* Encoded commands analyzed and documented
+* Encoded commands analysed and documented
 * PowerShell history reviewed
 * Logs archived for investigation
 
 ## Recovery
 
-* Verified no persistence mechanisms existed
+* Verified that no persistence mechanisms existed
 * Confirmed no secondary payloads executed
 * Monitoring continued after containment
 
@@ -203,7 +203,7 @@ These techniques are frequently used by attackers to execute payloads directly i
 * PowerShell Script Block logs
 * Sysmon process creation logs
 * Kibana alert screenshots
-* Encoded command artifacts
+* Encoded command artefacts
 
 ---
 
